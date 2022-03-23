@@ -22,6 +22,7 @@ public class Main {
         dialog.setFilenameFilter((dir, name) -> name.endsWith(".txt"));
         dialog.setMode(FileDialog.LOAD);
         dialog.setVisible(true);
+        dialog.dispose();
         return dialog.getDirectory() + dialog.getFile();
     }
 
