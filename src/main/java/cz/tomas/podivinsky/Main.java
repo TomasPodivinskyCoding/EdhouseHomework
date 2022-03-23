@@ -1,6 +1,8 @@
 package cz.tomas.podivinsky;
 
 import cz.tomas.podivinsky.IO.FileInterpreter;
+import cz.tomas.podivinsky.IO.ParsedFileContent;
+import cz.tomas.podivinsky.algorithm.BentleyOttmann;
 
 import java.awt.*;
 import java.io.*;
@@ -9,11 +11,14 @@ public class Main {
 
     public static void main(String[] args) {
         String chosenFileName = chooseFile();
-        File chosenFile = new File(chosenFileName);
         FileInterpreter fileInterpreter = new FileInterpreter();
 
         try {
-            fileInterpreter.getStructuredFileContent(chosenFile);
+            ParsedFileContent fileContent = fileInterpreter.getStructuredFileContent(chosenFileName);
+            if (fileContent != null) {
+                BentleyOttmann bentleyOttmann = new BentleyOttmann(fileContent.getAllPaths());
+                bentleyOttmann.findIntersections(fileContent.getMinDistance(), fileContent.getMaxDistance());
+            }
         } catch (FileNotFoundException e) {
             System.out.println("File with name: " + chosenFileName + " not found.");
         }

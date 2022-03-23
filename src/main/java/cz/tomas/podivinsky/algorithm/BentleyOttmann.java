@@ -3,6 +3,7 @@ package cz.tomas.podivinsky.algorithm;
 
 import cz.tomas.podivinsky.data.Event;
 import cz.tomas.podivinsky.data.Point;
+import cz.tomas.podivinsky.data.enums.EventType;
 
 import java.util.*;
 
@@ -20,13 +21,13 @@ public class BentleyOttmann {
         while (!events.isEmpty()) {
             Event c = events.poll();
             assert c != null;
-            if (c.getType() == 0) {
+            if (c.getType() == EventType.HORIZONTAL_START) {
                 points.add(c.getPoint1());
                 endingPoints.put(c.getPoint1(), c.getPoint2());
-            } else if (c.getType() == 1) {
+            } else if (c.getType() == EventType.HORIZONTAL_END) {
                 points.remove(c.getPoint2());
                 endingPoints.put(c.getPoint2(), c.getPoint1());
-            } else {
+            } else if (c.getType() == EventType.VERTICAL){
                 for (Point point : points) {
                     if (point.getDriverNumber() == c.getPoint1().getDriverNumber()) continue;
                     int biggerY = Math.max(c.getPoint2().getY(), c.getPoint1().getY());

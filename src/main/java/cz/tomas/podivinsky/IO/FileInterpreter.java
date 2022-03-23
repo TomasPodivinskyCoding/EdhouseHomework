@@ -3,6 +3,7 @@ package cz.tomas.podivinsky.IO;
 import cz.tomas.podivinsky.algorithm.BentleyOttmann;
 import cz.tomas.podivinsky.data.Event;
 import cz.tomas.podivinsky.data.Point;
+import cz.tomas.podivinsky.data.enums.EventType;
 
 import java.io.*;
 import java.util.*;
@@ -14,7 +15,7 @@ public class FileInterpreter {
     private int minDistance;
     private int maxDistance;
 
-    public void getStructuredFileContent(File chosenFile) throws FileNotFoundException {
+    public ParsedFileContent getStructuredFileContent(String chosenFile) throws FileNotFoundException {
         reader = new BufferedReader(new FileReader(chosenFile));
         try {
             getMinAndMaxDistance();
@@ -22,11 +23,11 @@ public class FileInterpreter {
             readDriverData(1); // second driver
             reader.close();
 
-            BentleyOttmann algorithm = new BentleyOttmann(allPaths);
-            algorithm.findIntersections(minDistance, maxDistance);
+            return new ParsedFileContent(allPaths, minDistance, maxDistance);
         } catch (IOException e) {
             System.out.println("Couldn't read the given file properly");
         }
+        return null;
     }
 
     private void getMinAndMaxDistance() throws IOException {
@@ -57,14 +58,14 @@ public class FileInterpreter {
             Point finalCoordinates = new Point(x, y, distance, driverNumber);
 
             if (startingCoordinates.getX() == finalCoordinates.getX()) {
-                allPaths.add(new Event(startingCoordinates, finalCoordinates, 2));
+                allPaths.add(new Event(startingCoordinates, finalCoordinates, EventType.VERTICAL));
             } else {
                 if (finalCoordinates.getX() < startingCoordinates.getX()) {
-                    allPaths.add(new Event(startingCoordinates, finalCoordinates, 1));
-                    allPaths.add(new Event(finalCoordinates, startingCoordinates, 0));
+                    allPaths.add(new Event(startingCoordinates, finalCoordinates, EventType.HORIZONTAL_END));
+                    allPaths.add(new Event(finalCoordinates, startingCoordinates, EventType.HORIZONTAL_START));
                 } else {
-                    allPaths.add(new Event(startingCoordinates, finalCoordinates, 0));
-                    allPaths.add(new Event(finalCoordinates, startingCoordinates, 1));
+                    allPaths.add(new Event(startingCoordinates, finalCoordinates, EventType.HORIZONTAL_START));
+                    allPaths.add(new Event(finalCoordinates, startingCoordinates, EventType.HORIZONTAL_END));
                 }
             }
             startingCoordinates = finalCoordinates;
