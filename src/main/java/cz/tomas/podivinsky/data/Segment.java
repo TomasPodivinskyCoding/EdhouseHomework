@@ -1,4 +1,4 @@
-package cz.tomas.podivinsky;
+package cz.tomas.podivinsky.data;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

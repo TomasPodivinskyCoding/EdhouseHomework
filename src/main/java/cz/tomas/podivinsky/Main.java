@@ -1,5 +1,7 @@
 package cz.tomas.podivinsky;
 
+import cz.tomas.podivinsky.IO.FileInterpreter;
+
 import java.awt.*;
 import java.io.*;
 

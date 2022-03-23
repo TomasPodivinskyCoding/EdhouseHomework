@@ -1,13 +1,16 @@
-package cz.tomas.podivinsky;
+package cz.tomas.podivinsky.algorithm;
 
+
+import cz.tomas.podivinsky.data.Event;
+import cz.tomas.podivinsky.data.Point;
 
 import java.util.*;
 
 public class BentleyOttmann {
 
-    private Queue<Event> events;
-    private ArrayList<Point> points = new ArrayList<>();
-    private HashMap<Point, Point> endingPoints = new HashMap<>();
+    private final Queue<Event> events;
+    private final ArrayList<Point> points = new ArrayList<>();
+    private final HashMap<Point, Point> endingPoints = new HashMap<>();
 
     public BentleyOttmann(Queue<Event> events) {
         this.events = events;

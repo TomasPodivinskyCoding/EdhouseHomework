@@ -1,4 +1,8 @@
-package cz.tomas.podivinsky;
+package cz.tomas.podivinsky.IO;
+
+import cz.tomas.podivinsky.algorithm.BentleyOttmann;
+import cz.tomas.podivinsky.data.Event;
+import cz.tomas.podivinsky.data.Point;
 
 import java.io.*;
 import java.util.*;
