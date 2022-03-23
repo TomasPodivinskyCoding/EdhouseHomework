@@ -3,6 +3,7 @@ package cz.tomas.podivinsky;
 import cz.tomas.podivinsky.IO.FileInterpreter;
 import cz.tomas.podivinsky.IO.ParsedFileContent;
 import cz.tomas.podivinsky.algorithm.BentleyOttmann;
+import cz.tomas.podivinsky.data.IntersectionPoint;
 
 import java.awt.*;
 import java.io.*;
@@ -11,16 +12,19 @@ public class Main {
 
     public static void main(String[] args) {
         String chosenFileName = chooseFile();
-        FileInterpreter fileInterpreter = new FileInterpreter();
+        if (chosenFileName != null) {
+            FileInterpreter fileInterpreter = new FileInterpreter();
 
-        try {
-            ParsedFileContent fileContent = fileInterpreter.getStructuredFileContent(chosenFileName);
-            if (fileContent != null) {
-                BentleyOttmann bentleyOttmann = new BentleyOttmann(fileContent.getAllPaths());
-                bentleyOttmann.findIntersections(fileContent.getMinDistance(), fileContent.getMaxDistance());
+            try {
+                ParsedFileContent fileContent = fileInterpreter.getStructuredFileContent(chosenFileName);
+                if (fileContent != null) {
+                    BentleyOttmann bentleyOttmann = new BentleyOttmann();
+                    IntersectionPoint intersection = bentleyOttmann.findIntersections(fileContent.getAllPaths(), fileContent.getMinDistance(), fileContent.getMaxDistance());
+                    System.out.println("[" + intersection.getX() + "," + intersection.getY() + "]");
+                }
+            } catch (FileNotFoundException e) {
+                System.out.println("File with name: " + chosenFileName + " not found.");
             }
-        } catch (FileNotFoundException e) {
-            System.out.println("File with name: " + chosenFileName + " not found.");
         }
     }
 
@@ -30,7 +34,10 @@ public class Main {
         dialog.setMode(FileDialog.LOAD);
         dialog.setVisible(true);
         dialog.dispose();
+        if (dialog.getFile() == null) {
+            System.out.println("You didn't choose any files");
+            return null;
+        }
         return dialog.getDirectory() + dialog.getFile();
     }
-
 }

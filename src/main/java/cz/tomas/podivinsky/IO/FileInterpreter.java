@@ -32,6 +32,7 @@ public class FileInterpreter {
 
     private void getMinAndMaxDistance() throws IOException {
         String minAndMaxDistanceForRest = reader.readLine();
+        if (minAndMaxDistanceForRest == null) throw new IOException();
         String[] minAndMaxDistanceForRestSplit = minAndMaxDistanceForRest.split("-");
         minDistance = Integer.parseInt(minAndMaxDistanceForRestSplit[0]);
         maxDistance = Integer.parseInt(minAndMaxDistanceForRestSplit[1]);
@@ -40,6 +41,7 @@ public class FileInterpreter {
     private void readDriverData(int driverNumber) throws IOException {
         int distance = 0;
         String line = reader.readLine();
+        if (line == null) throw new IOException();
         String[] instructions = line.split(",");
 
         Point startingCoordinates = new Point(0, 0, 0, driverNumber);
@@ -48,27 +50,30 @@ public class FileInterpreter {
             distance += distanceToMove;
             int x = startingCoordinates.getX();
             int y = startingCoordinates.getY();
-            char currentWay = instruction.charAt(instruction.length() - 1);
-            switch (currentWay) {
+            switch (instruction.charAt(instruction.length() - 1)) {
                 case 'N'-> y += distanceToMove;
                 case 'S'-> y -= distanceToMove;
                 case 'E'-> x += distanceToMove;
                 case 'W'-> x -= distanceToMove;
+                default -> distance -= distanceToMove;
             }
             Point finalCoordinates = new Point(x, y, distance, driverNumber);
-
-            if (startingCoordinates.getX() == finalCoordinates.getX()) {
-                allPaths.add(new Event(startingCoordinates, finalCoordinates, EventType.VERTICAL));
-            } else {
-                if (finalCoordinates.getX() < startingCoordinates.getX()) {
-                    allPaths.add(new Event(startingCoordinates, finalCoordinates, EventType.HORIZONTAL_END));
-                    allPaths.add(new Event(finalCoordinates, startingCoordinates, EventType.HORIZONTAL_START));
-                } else {
-                    allPaths.add(new Event(startingCoordinates, finalCoordinates, EventType.HORIZONTAL_START));
-                    allPaths.add(new Event(finalCoordinates, startingCoordinates, EventType.HORIZONTAL_END));
-                }
-            }
+            addEvent(startingCoordinates, finalCoordinates);
             startingCoordinates = finalCoordinates;
+        }
+    }
+
+    private void addEvent(Point startingCoordinates, Point finalCoordinates) {
+        if (startingCoordinates.getX() == finalCoordinates.getX()) {
+            allPaths.add(new Event(startingCoordinates, finalCoordinates, EventType.VERTICAL));
+            return;
+        }
+        if (finalCoordinates.getX() < startingCoordinates.getX()) {
+            allPaths.add(new Event(startingCoordinates, finalCoordinates, EventType.HORIZONTAL_END));
+            allPaths.add(new Event(finalCoordinates, startingCoordinates, EventType.HORIZONTAL_START));
+        } else {
+            allPaths.add(new Event(startingCoordinates, finalCoordinates, EventType.HORIZONTAL_START));
+            allPaths.add(new Event(finalCoordinates, startingCoordinates, EventType.HORIZONTAL_END));
         }
     }
 

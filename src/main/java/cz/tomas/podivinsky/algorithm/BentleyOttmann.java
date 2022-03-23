@@ -2,6 +2,7 @@ package cz.tomas.podivinsky.algorithm;
 
 
 import cz.tomas.podivinsky.data.Event;
+import cz.tomas.podivinsky.data.IntersectionPoint;
 import cz.tomas.podivinsky.data.Point;
 import cz.tomas.podivinsky.data.enums.EventType;
 
@@ -9,42 +10,52 @@ import java.util.*;
 
 public class BentleyOttmann {
 
-    private final Queue<Event> events;
+    private Queue<Event> events;
     private final ArrayList<Point> points = new ArrayList<>();
     private final HashMap<Point, Point> endingPoints = new HashMap<>();
 
-    public BentleyOttmann(Queue<Event> events) {
-        this.events = events;
-    }
+    private int minDistance;
+    private int maxDistance;
 
-    public void findIntersections(int minDistance, int maxDistance) {
+    public IntersectionPoint findIntersections(Queue<Event> events, int minDistance, int maxDistance) {
+        this.minDistance = minDistance;
+        this.maxDistance = maxDistance;
         while (!events.isEmpty()) {
             Event c = events.poll();
             assert c != null;
-            if (c.getType() == EventType.HORIZONTAL_START) {
-                points.add(c.getPoint1());
-                endingPoints.put(c.getPoint1(), c.getPoint2());
-            } else if (c.getType() == EventType.HORIZONTAL_END) {
-                points.remove(c.getPoint2());
-                endingPoints.put(c.getPoint2(), c.getPoint1());
-            } else if (c.getType() == EventType.VERTICAL){
-                for (Point point : points) {
-                    if (point.getDriverNumber() == c.getPoint1().getDriverNumber()) continue;
-                    int biggerY = Math.max(c.getPoint2().getY(), c.getPoint1().getY());
-                    int smallerY = Math.min(c.getPoint2().getY(), c.getPoint1().getY());
-                    if (point.getY() < biggerY && point.getY() > smallerY) {
-                        int horizontalDistance = getHorizontalDistance(point, c);
-                        int verticalDistance = getVerticalDistance(point, c);
-                        if (horizontalDistance > minDistance && horizontalDistance < maxDistance &&
-                            verticalDistance > minDistance && verticalDistance < maxDistance) {
-                            System.out.println("[" + c.getPoint1().getX() + "," + point.getY() + "]");
-                            return;
+            switch (c.getType()) {
+                case HORIZONTAL_START -> {
+                    points.add(c.getPoint1());
+                    endingPoints.put(c.getPoint1(), c.getPoint2());
+                }
+                case HORIZONTAL_END -> {
+                    points.remove(c.getPoint2());
+                    endingPoints.put(c.getPoint2(), c.getPoint1());
+                }
+                case VERTICAL -> {
+                    for (Point point : points) {
+                        if (validateIntersection(c, point)) {
+                            return new IntersectionPoint(c.getPoint1().getX(), point.getY());
                         }
                     }
                 }
             }
         }
         throw new RuntimeException("Coudln't find a good intersection for a pause!");
+    }
+
+    private boolean validateIntersection(Event c, Point point) {
+        if (point.getDriverNumber() == c.getPoint1().getDriverNumber()) return false;
+
+        int biggerY = Math.max(c.getPoint2().getY(), c.getPoint1().getY());
+        int smallerY = Math.min(c.getPoint2().getY(), c.getPoint1().getY());
+        if (point.getY() < biggerY && point.getY() > smallerY) {
+            int horizontalDistance = getHorizontalDistance(point, c);
+            int verticalDistance = getVerticalDistance(point, c);
+            return horizontalDistance > minDistance && horizontalDistance < maxDistance &&
+                    verticalDistance > minDistance && verticalDistance < maxDistance;
+        }
+        return false;
     }
 
     private int getHorizontalDistance(Point point, Event event) {
