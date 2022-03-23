@@ -2,6 +2,7 @@ package cz.tomas.podivinsky.algorithm;
 
 import cz.tomas.podivinsky.algorithm.BentleyOttmann;
 import cz.tomas.podivinsky.data.Event;
+import cz.tomas.podivinsky.data.InputFileContent;
 import cz.tomas.podivinsky.data.Point;
 import cz.tomas.podivinsky.data.enums.EventType;
 import org.junit.jupiter.api.Test;
@@ -16,7 +17,7 @@ class BentleyOttmanTest {
     @Test
     void findIntersections_emptyQueue_throwsException() {
         BentleyOttmann bentleyOttmann = new BentleyOttmann();
-        assertThrows(RuntimeException.class, ()-> bentleyOttmann.findIntersections(new PriorityQueue<>(), 0, 0));
+        assertThrows(RuntimeException.class, ()-> bentleyOttmann.findIntersections(new InputFileContent(new PriorityQueue<>(), 0, 0)));
     }
 
 }

@@ -2,6 +2,7 @@ package cz.tomas.podivinsky.algorithm;
 
 
 import cz.tomas.podivinsky.data.Event;
+import cz.tomas.podivinsky.data.InputFileContent;
 import cz.tomas.podivinsky.data.IntersectionPoint;
 import cz.tomas.podivinsky.data.Point;
 import cz.tomas.podivinsky.data.enums.EventType;
@@ -10,18 +11,17 @@ import java.util.*;
 
 public class BentleyOttmann {
 
-    private Queue<Event> events;
     private final ArrayList<Point> points = new ArrayList<>();
     private final HashMap<Point, Point> endingPoints = new HashMap<>();
 
     private int minDistance;
     private int maxDistance;
 
-    public IntersectionPoint findIntersections(Queue<Event> events, int minDistance, int maxDistance) {
-        this.minDistance = minDistance;
-        this.maxDistance = maxDistance;
-        while (!events.isEmpty()) {
-            Event c = events.poll();
+    public IntersectionPoint findIntersections(InputFileContent inputFileContent) {
+        this.minDistance = inputFileContent.getMinDistance();
+        this.maxDistance = inputFileContent.getMaxDistance();
+        while (!inputFileContent.getAllPaths().isEmpty()) {
+            Event c = inputFileContent.getAllPaths().poll();
             assert c != null;
             switch (c.getType()) {
                 case HORIZONTAL_START -> {

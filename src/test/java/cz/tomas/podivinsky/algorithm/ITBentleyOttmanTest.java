@@ -1,8 +1,7 @@
 package cz.tomas.podivinsky.algorithm;
 
 import cz.tomas.podivinsky.IO.FileInterpreter;
-import cz.tomas.podivinsky.IO.ParsedFileContent;
-import cz.tomas.podivinsky.data.IntersectionPoint;
+import cz.tomas.podivinsky.data.InputFileContent;
 import cz.tomas.podivinsky.testUtil.TestUtility;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -35,9 +34,10 @@ class ITBentleyOttmanTest {
                 3E,4N
                 """;
         Path testFile = TestUtility.createInputFile(tempDir, inputData);
-        ParsedFileContent content = fileInterpreter.getStructuredFileContent(testFile.toString());
-        assertThrows(RuntimeException.class, ()->
-                bentleyOttmann.findIntersections(content.getAllPaths(), content.getMinDistance(), content.getMaxDistance()));
+
+        InputFileContent content = fileInterpreter.getStructuredFileContent(testFile.toString());
+
+        assertThrows(RuntimeException.class, ()-> bentleyOttmann.findIntersections(content));
     }
 
 }

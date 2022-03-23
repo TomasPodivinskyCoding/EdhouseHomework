@@ -1,7 +1,7 @@
 package cz.tomas.podivinsky;
 
 import cz.tomas.podivinsky.IO.FileInterpreter;
-import cz.tomas.podivinsky.IO.ParsedFileContent;
+import cz.tomas.podivinsky.data.InputFileContent;
 import cz.tomas.podivinsky.algorithm.BentleyOttmann;
 import cz.tomas.podivinsky.data.IntersectionPoint;
 
@@ -16,10 +16,10 @@ public class Main {
             FileInterpreter fileInterpreter = new FileInterpreter();
 
             try {
-                ParsedFileContent fileContent = fileInterpreter.getStructuredFileContent(chosenFileName);
+                InputFileContent fileContent = fileInterpreter.getStructuredFileContent(chosenFileName);
                 if (fileContent != null) {
                     BentleyOttmann bentleyOttmann = new BentleyOttmann();
-                    IntersectionPoint intersection = bentleyOttmann.findIntersections(fileContent.getAllPaths(), fileContent.getMinDistance(), fileContent.getMaxDistance());
+                    IntersectionPoint intersection = bentleyOttmann.findIntersections(fileContent);
                     System.out.println("[" + intersection.getX() + "," + intersection.getY() + "]");
                 }
             } catch (FileNotFoundException e) {

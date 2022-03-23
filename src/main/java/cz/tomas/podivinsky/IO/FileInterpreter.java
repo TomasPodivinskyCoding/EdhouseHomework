@@ -1,7 +1,7 @@
 package cz.tomas.podivinsky.IO;
 
-import cz.tomas.podivinsky.algorithm.BentleyOttmann;
 import cz.tomas.podivinsky.data.Event;
+import cz.tomas.podivinsky.data.InputFileContent;
 import cz.tomas.podivinsky.data.Point;
 import cz.tomas.podivinsky.data.enums.EventType;
 
@@ -15,7 +15,7 @@ public class FileInterpreter {
     private int minDistance;
     private int maxDistance;
 
-    public ParsedFileContent getStructuredFileContent(String chosenFile) throws FileNotFoundException {
+    public InputFileContent getStructuredFileContent(String chosenFile) throws FileNotFoundException {
         reader = new BufferedReader(new FileReader(chosenFile));
         try {
             getMinAndMaxDistance();
@@ -23,7 +23,7 @@ public class FileInterpreter {
             readDriverData(1); // second driver
             reader.close();
 
-            return new ParsedFileContent(allPaths, minDistance, maxDistance);
+            return new InputFileContent(allPaths, minDistance, maxDistance);
         } catch (IOException e) {
             System.out.println("Couldn't read the given file properly");
         }

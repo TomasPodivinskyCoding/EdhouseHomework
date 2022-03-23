@@ -1,20 +1,14 @@
 package cz.tomas.podivinsky.IO;
 
-import cz.tomas.podivinsky.data.Event;
+import cz.tomas.podivinsky.data.InputFileContent;
 import cz.tomas.podivinsky.testUtil.TestUtility;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.OpenOption;
 import java.nio.file.Path;
-import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -40,7 +34,7 @@ class FileInterpreterTest {
                 """;
         Path inputFile = TestUtility.createInputFile(tempDir, inputData);
 
-        ParsedFileContent content = fileInterpreter.getStructuredFileContent(inputFile.toString());
+        InputFileContent content = fileInterpreter.getStructuredFileContent(inputFile.toString());
 
         assertEquals(content.getMinDistance(), 100);
         assertEquals(content.getMaxDistance(), 101);

@@ -1,17 +1,15 @@
-package cz.tomas.podivinsky.IO;
+package cz.tomas.podivinsky.data;
 
-import cz.tomas.podivinsky.data.Event;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.PriorityQueue;
 import java.util.Queue;
 
 @AllArgsConstructor
 @Getter
 @Setter
-public class ParsedFileContent {
+public class InputFileContent {
     private final Queue<Event> allPaths;
     private int minDistance;
     private int maxDistance;
