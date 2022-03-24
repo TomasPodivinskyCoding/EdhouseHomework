@@ -12,19 +12,26 @@ public class Main {
 
     public static void main(String[] args) {
         String chosenFileName = chooseFile();
-        if (chosenFileName != null) {
-            FileInterpreter fileInterpreter = new FileInterpreter();
+        if (chosenFileName == null) return;
 
-            try {
-                InputFileContent fileContent = fileInterpreter.getStructuredFileContent(chosenFileName);
-                if (fileContent != null) {
-                    BentleyOttmann bentleyOttmann = new BentleyOttmann();
-                    IntersectionPoint intersection = bentleyOttmann.findIntersections(fileContent);
-                    System.out.println("[" + intersection.getX() + "," + intersection.getY() + "]");
-                }
-            } catch (FileNotFoundException e) {
-                System.out.println("File with name: " + chosenFileName + " not found.");
-            }
+        try {
+            FileInterpreter fileInterpreter = new FileInterpreter();
+            InputFileContent fileContent = fileInterpreter.getStructuredFileContent(chosenFileName);
+
+            BentleyOttmann bentleyOttmann = new BentleyOttmann();
+            IntersectionPoint intersection = bentleyOttmann.findIntersections(fileContent);
+            System.out.println("[" + intersection.getX() + "," + intersection.getY() + "]");
+        } catch (IOException e) {
+            handleIOException(e, chosenFileName);
+        }
+    }
+
+    private static void handleIOException(IOException e, String chosenFileName) {
+        String startOfErrorMessage = "File with name: " + chosenFileName;
+        if (e instanceof FileNotFoundException) {
+            System.out.println(startOfErrorMessage + " not found.");
+        } else {
+            System.out.println(startOfErrorMessage + " does not have the correct input format");
         }
     }
 
@@ -35,7 +42,7 @@ public class Main {
         dialog.setVisible(true);
         dialog.dispose();
         if (dialog.getFile() == null) {
-            System.out.println("You didn't choose any files");
+            System.out.println("You didn't choose a file!");
             return null;
         }
         return dialog.getDirectory() + dialog.getFile();

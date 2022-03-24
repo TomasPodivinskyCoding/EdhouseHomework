@@ -5,7 +5,6 @@ import cz.tomas.podivinsky.data.Event;
 import cz.tomas.podivinsky.data.InputFileContent;
 import cz.tomas.podivinsky.data.IntersectionPoint;
 import cz.tomas.podivinsky.data.Point;
-import cz.tomas.podivinsky.data.enums.EventType;
 
 import java.util.*;
 
@@ -21,27 +20,31 @@ public class BentleyOttmann {
         this.minDistance = inputFileContent.getMinDistance();
         this.maxDistance = inputFileContent.getMaxDistance();
         while (!inputFileContent.getAllPaths().isEmpty()) {
-            Event c = inputFileContent.getAllPaths().poll();
-            assert c != null;
-            switch (c.getType()) {
-                case HORIZONTAL_START -> {
-                    points.add(c.getPoint1());
-                    endingPoints.put(c.getPoint1(), c.getPoint2());
-                }
-                case HORIZONTAL_END -> {
-                    points.remove(c.getPoint2());
-                    endingPoints.put(c.getPoint2(), c.getPoint1());
-                }
+            Event currentLine = inputFileContent.getAllPaths().poll();
+            assert currentLine != null;
+            switch (currentLine.getType()) {
+                case HORIZONTAL_START -> handleHorizontalStart(currentLine);
+                case HORIZONTAL_END -> handleHorizontalEnd(currentLine);
                 case VERTICAL -> {
                     for (Point point : points) {
-                        if (validateIntersection(c, point)) {
-                            return new IntersectionPoint(c.getPoint1().getX(), point.getY());
+                        if (validateIntersection(currentLine, point)) {
+                            return new IntersectionPoint(currentLine.getPoint1().getX(), point.getY());
                         }
                     }
                 }
             }
         }
-        throw new RuntimeException("Coudln't find a good intersection for a pause!");
+        throw new RuntimeException("Couldn't find a good intersection for a pause!");
+    }
+
+    private void handleHorizontalStart(Event currentLine) {
+        points.add(currentLine.getPoint1());
+        endingPoints.put(currentLine.getPoint1(), currentLine.getPoint2());
+    }
+
+    private void handleHorizontalEnd(Event currentLine) {
+        points.remove(currentLine.getPoint2());
+        endingPoints.remove(currentLine.getPoint2());
     }
 
     private boolean validateIntersection(Event c, Point point) {
@@ -60,34 +63,30 @@ public class BentleyOttmann {
 
     private int getHorizontalDistance(Point point, Event event) {
         Point counterPoint = endingPoints.get(point);
-        Point smallerDistancePoint;
-        if (point.getDistance() > counterPoint.getDistance()) {
-            smallerDistancePoint = counterPoint;
-        } else {
-            smallerDistancePoint = point;
-        }
+        Point smallerDistancePoint = getSmallerDistancePoint(point, counterPoint);
         int horizontalDistance = smallerDistancePoint.getDistance();
-        if (event.getPoint1().getX() > smallerDistancePoint.getX()) {
-            horizontalDistance += Math.abs(event.getPoint1().getX() - smallerDistancePoint.getX());
-        } else {
-            horizontalDistance += Math.abs(smallerDistancePoint.getX() - event.getPoint1().getX());
-        }
-        return horizontalDistance;
+        return horizontalDistance + getDistanceToIntersection(event.getPoint1().getX(), smallerDistancePoint.getX());
     }
 
     private int getVerticalDistance(Point point, Event c) {
-        Point smallerDistancePoint;
-        if (c.getPoint1().getDistance() > c.getPoint2().getDistance()) {
-            smallerDistancePoint = c.getPoint2();
-        } else {
-            smallerDistancePoint = c.getPoint1();
-        }
+        Point smallerDistancePoint = getSmallerDistancePoint(c.getPoint1(), c.getPoint2());
         int verticalDistance = smallerDistancePoint.getDistance();
-        if (point.getY() > smallerDistancePoint.getY()) {
-            verticalDistance += Math.abs(point.getY() - smallerDistancePoint.getY());
-        } else {
-            verticalDistance += Math.abs(smallerDistancePoint.getY() - point.getY());
-        }
-        return verticalDistance;
+        return verticalDistance + getDistanceToIntersection(point.getY(), smallerDistancePoint.getY());
     }
+
+    private Point getSmallerDistancePoint(Point point1, Point point2) {
+        if (point1.getDistance() > point2.getDistance()) {
+            return point2;
+        } else {
+            return point1;
+        }
+    }
+    private int getDistanceToIntersection(int num1, int num2) {
+        if (num1 > num2) {
+            return Math.abs(num1 - num2);
+        } else {
+            return Math.abs(num2 - num1);
+        }
+    }
+
 }

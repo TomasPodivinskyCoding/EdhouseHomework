@@ -12,22 +12,21 @@ public class FileInterpreter {
 
     private BufferedReader reader;
     private final Queue<Event> allPaths = new PriorityQueue<>(new EventComparator());
+    private int currentDistance;
     private int minDistance;
     private int maxDistance;
+    private int driverNumber;
 
-    public InputFileContent getStructuredFileContent(String chosenFile) throws FileNotFoundException {
+    public InputFileContent getStructuredFileContent(String chosenFile) throws IOException {
         reader = new BufferedReader(new FileReader(chosenFile));
-        try {
-            getMinAndMaxDistance();
-            readDriverData(0); // first driver
-            readDriverData(1); // second driver
-            reader.close();
+        getMinAndMaxDistance();
+        driverNumber = 0;
+        readDriverData(); // first driver
+        driverNumber = 1;
+        readDriverData(); // second driver
+        reader.close();
 
-            return new InputFileContent(allPaths, minDistance, maxDistance);
-        } catch (IOException e) {
-            System.out.println("Couldn't read the given file properly");
-        }
-        return null;
+        return new InputFileContent(allPaths, minDistance, maxDistance);
     }
 
     private void getMinAndMaxDistance() throws IOException {
@@ -38,29 +37,34 @@ public class FileInterpreter {
         maxDistance = Integer.parseInt(minAndMaxDistanceForRestSplit[1]);
     }
 
-    private void readDriverData(int driverNumber) throws IOException {
-        int distance = 0;
+    private void readDriverData() throws IOException {
+        currentDistance = 0;
         String line = reader.readLine();
         if (line == null) throw new IOException();
         String[] instructions = line.split(",");
 
         Point startingCoordinates = new Point(0, 0, 0, driverNumber);
         for (String instruction : instructions) {
-            int distanceToMove = Integer.parseInt(instruction.substring(0, instruction.length() - 1));
-            distance += distanceToMove;
-            int x = startingCoordinates.getX();
-            int y = startingCoordinates.getY();
-            switch (instruction.charAt(instruction.length() - 1)) {
-                case 'N'-> y += distanceToMove;
-                case 'S'-> y -= distanceToMove;
-                case 'E'-> x += distanceToMove;
-                case 'W'-> x -= distanceToMove;
-                default -> distance -= distanceToMove;
-            }
-            Point finalCoordinates = new Point(x, y, distance, driverNumber);
+            Point finalCoordinates = parseInstructionToNewPoint(instruction, startingCoordinates);
+            currentDistance = finalCoordinates.getDistance();
             addEvent(startingCoordinates, finalCoordinates);
             startingCoordinates = finalCoordinates;
         }
+    }
+
+    private Point parseInstructionToNewPoint(String instruction, Point startingPoint) {
+        int distanceToMove = Integer.parseInt(instruction.substring(0, instruction.length() - 1));
+        currentDistance += distanceToMove;
+        int x = startingPoint.getX();
+        int y = startingPoint.getY();
+        switch (instruction.charAt(instruction.length() - 1)) {
+            case 'N'-> y += distanceToMove;
+            case 'S'-> y -= distanceToMove;
+            case 'E'-> x += distanceToMove;
+            case 'W'-> x -= distanceToMove;
+            default -> currentDistance -= distanceToMove;
+        }
+        return new Point(x, y, currentDistance, driverNumber);
     }
 
     private void addEvent(Point startingCoordinates, Point finalCoordinates) {
@@ -68,7 +72,7 @@ public class FileInterpreter {
             allPaths.add(new Event(startingCoordinates, finalCoordinates, EventType.VERTICAL));
             return;
         }
-        if (finalCoordinates.getX() < startingCoordinates.getX()) {
+        if (startingCoordinates.getX() > finalCoordinates.getX()) {
             allPaths.add(new Event(startingCoordinates, finalCoordinates, EventType.HORIZONTAL_END));
             allPaths.add(new Event(finalCoordinates, startingCoordinates, EventType.HORIZONTAL_START));
         } else {
