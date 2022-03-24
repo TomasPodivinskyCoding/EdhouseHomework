@@ -5,14 +5,15 @@ import org.junit.jupiter.api.Test;
 
 import java.util.PriorityQueue;
 
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class BentleyOttmanAlgorithmTest {
 
     @Test
-    void findIntersections_emptyQueue_throwsException() {
+    void findIntersections_emptyQueue_isNull() {
         BentleyOttmannAlgorithm bentleyOttmann = new BentleyOttmannAlgorithm();
-        assertThrows(RuntimeException.class, ()-> bentleyOttmann.findIntersections(new InputFileContent(new PriorityQueue<>(), 0, 0)));
+        assertNull(bentleyOttmann.findIntersections(new InputFileContent(new PriorityQueue<>(), 0, 0)));
     }
 
 }

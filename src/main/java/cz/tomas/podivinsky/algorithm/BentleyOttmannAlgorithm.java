@@ -34,7 +34,8 @@ public class BentleyOttmannAlgorithm {
                 }
             }
         }
-        throw new RuntimeException("Couldn't find a good intersection for a pause!");
+        System.err.println("Couldn't find a good intersection for a pause!");
+        return null;
     }
 
     private void handleHorizontalStart(Event currentLine) {

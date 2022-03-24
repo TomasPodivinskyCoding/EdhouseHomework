@@ -20,7 +20,7 @@ public class Main {
 
             BentleyOttmannAlgorithm bentleyOttmann = new BentleyOttmannAlgorithm();
             IntersectionPoint intersection = bentleyOttmann.findIntersections(fileContent);
-            System.out.println("[" + intersection.getX() + "," + intersection.getY() + "]");
+            if (intersection != null) System.out.println("[" + intersection.getX() + "," + intersection.getY() + "]");
         } catch (IOException e) {
             handleIOException(e, chosenFileName);
         }
@@ -29,9 +29,9 @@ public class Main {
     private static void handleIOException(IOException e, String chosenFileName) {
         String startOfErrorMessage = "File with name: " + chosenFileName;
         if (e instanceof FileNotFoundException) {
-            System.out.println(startOfErrorMessage + " not found.");
+            System.err.println(startOfErrorMessage + " not found.");
         } else {
-            System.out.println(startOfErrorMessage + " does not have the correct input format");
+            System.err.println(startOfErrorMessage + " does not have the correct input format");
         }
     }
 
@@ -42,7 +42,7 @@ public class Main {
         dialog.setVisible(true);
         dialog.dispose();
         if (dialog.getFile() == null) {
-            System.out.println("You didn't choose a file!");
+            System.err.println("You didn't choose a file!");
             return null;
         }
         return dialog.getDirectory() + dialog.getFile();

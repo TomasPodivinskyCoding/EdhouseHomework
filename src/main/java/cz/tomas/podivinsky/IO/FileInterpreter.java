@@ -11,7 +11,7 @@ import java.util.*;
 public class FileInterpreter {
 
     private BufferedReader reader;
-    private final Queue<Event> allPaths = new PriorityQueue<>(new EventComparator());
+    private final Queue<Event> allPaths = new PriorityQueue<>(Comparator.comparingInt(o -> o.getPoint1().getX()));
     private int currentDistance;
     private int minDistance;
     private int maxDistance;
@@ -62,7 +62,7 @@ public class FileInterpreter {
             case 'S'-> y -= distanceToMove;
             case 'E'-> x += distanceToMove;
             case 'W'-> x -= distanceToMove;
-            default -> currentDistance -= distanceToMove;
+            default -> currentDistance -= distanceToMove; // we do not move on unknown directions
         }
         return new Point(x, y, currentDistance, driverNumber);
     }
@@ -78,13 +78,6 @@ public class FileInterpreter {
         } else {
             allPaths.add(new Event(startingCoordinates, finalCoordinates, EventType.HORIZONTAL_START));
             allPaths.add(new Event(finalCoordinates, startingCoordinates, EventType.HORIZONTAL_END));
-        }
-    }
-
-    public static class EventComparator implements Comparator<Event> {
-        @Override
-        public int compare(Event o1, Event o2) {
-            return Integer.compare(o1.getPoint1().getX(), o2.getPoint1().getX());
         }
     }
 }
