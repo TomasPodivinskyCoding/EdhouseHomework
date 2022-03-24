@@ -52,8 +52,8 @@ public class BentleyOttmann {
         if (point.getY() < biggerY && point.getY() > smallerY) {
             int horizontalDistance = getHorizontalDistance(point, c);
             int verticalDistance = getVerticalDistance(point, c);
-            return horizontalDistance > minDistance && horizontalDistance < maxDistance &&
-                    verticalDistance > minDistance && verticalDistance < maxDistance;
+            return horizontalDistance >= minDistance && horizontalDistance <= maxDistance &&
+                    verticalDistance >= minDistance && verticalDistance <= maxDistance;
         }
         return false;
     }
