@@ -5,10 +5,11 @@ import cz.tomas.podivinsky.data.InputFileContent;
 import cz.tomas.podivinsky.data.Point;
 import cz.tomas.podivinsky.data.enums.EventType;
 
+import java.awt.*;
 import java.io.*;
 import java.util.*;
 
-public class FileInterpreter {
+public class FileParser {
 
     private BufferedReader reader;
     private final Queue<Event> allPaths = new PriorityQueue<>(Comparator.comparingInt(o -> o.getPoint1().getX()));
@@ -16,6 +17,19 @@ public class FileInterpreter {
     private int minDistance;
     private int maxDistance;
     private int driverNumber;
+
+    public String chooseFile() {
+        FileDialog dialog = new FileDialog((Frame) null, "Choose input file");
+        dialog.setFilenameFilter((dir, name) -> name.endsWith(".txt"));
+        dialog.setMode(FileDialog.LOAD);
+        dialog.setVisible(true);
+        dialog.dispose();
+        // this check is done to return null instead of concatenated nullnull value
+        if (dialog.getDirectory() == null || dialog.getFile() == null) {
+            return null;
+        }
+        return dialog.getDirectory() + dialog.getFile();
+    }
 
     public InputFileContent getStructuredFileContent(String chosenFile) throws IOException {
         reader = new BufferedReader(new FileReader(chosenFile));

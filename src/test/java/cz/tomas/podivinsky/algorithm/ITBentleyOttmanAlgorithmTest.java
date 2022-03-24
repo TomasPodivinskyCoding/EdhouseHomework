@@ -1,6 +1,6 @@
 package cz.tomas.podivinsky.algorithm;
 
-import cz.tomas.podivinsky.IO.FileInterpreter;
+import cz.tomas.podivinsky.IO.FileParser;
 import cz.tomas.podivinsky.data.InputFileContent;
 import cz.tomas.podivinsky.testUtil.TestUtility;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,12 +10,11 @@ import org.junit.jupiter.api.io.TempDir;
 import java.io.IOException;
 import java.nio.file.Path;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 class ITBentleyOttmanAlgorithmTest {
 
-    private FileInterpreter fileInterpreter;
+    private FileParser fileInterpreter;
     private BentleyOttmannAlgorithm bentleyOttmannAlgorithm;
 
     @TempDir
@@ -23,7 +22,7 @@ class ITBentleyOttmanAlgorithmTest {
 
     @BeforeEach
     public void beforeEach() {
-        fileInterpreter = new FileInterpreter();
+        fileInterpreter = new FileParser();
         bentleyOttmannAlgorithm = new BentleyOttmannAlgorithm();
     }
 
@@ -38,7 +37,7 @@ class ITBentleyOttmanAlgorithmTest {
 
         InputFileContent content = fileInterpreter.getStructuredFileContent(testFile.toString());
 
-        assertDoesNotThrow(()-> bentleyOttmannAlgorithm.findIntersections(content));
+        assertNotNull(bentleyOttmannAlgorithm.findIntersections(content));
     }
 
     @Test
@@ -52,7 +51,7 @@ class ITBentleyOttmanAlgorithmTest {
 
         InputFileContent content = fileInterpreter.getStructuredFileContent(testFile.toString());
 
-        assertDoesNotThrow(()-> bentleyOttmannAlgorithm.findIntersections(content));
+        assertNotNull(bentleyOttmannAlgorithm.findIntersections(content));
     }
 
     @Test
@@ -66,6 +65,20 @@ class ITBentleyOttmanAlgorithmTest {
 
         InputFileContent content = fileInterpreter.getStructuredFileContent(testFile.toString());
 
-        assertDoesNotThrow(()-> bentleyOttmannAlgorithm.findIntersections(content));
+        assertNotNull(bentleyOttmannAlgorithm.findIntersections(content));
+    }
+
+    @Test
+    void findIntersections_noIntersections_returnsNull() throws IOException {
+        String inputData = """
+                6-10
+                3W
+                3S
+                """;
+        Path testFile = TestUtility.createInputFile(tempDir, inputData);
+
+        InputFileContent content = fileInterpreter.getStructuredFileContent(testFile.toString());
+
+        assertNull(bentleyOttmannAlgorithm.findIntersections(content));
     }
 }

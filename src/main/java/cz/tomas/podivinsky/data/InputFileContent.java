@@ -8,7 +8,6 @@ import java.util.Queue;
 
 @AllArgsConstructor
 @Getter
-@Setter
 public class InputFileContent {
     private final Queue<Event> allPaths;
     private int minDistance;

@@ -34,7 +34,6 @@ public class BentleyOttmannAlgorithm {
                 }
             }
         }
-        System.err.println("Couldn't find a good intersection for a pause!");
         return null;
     }
 
