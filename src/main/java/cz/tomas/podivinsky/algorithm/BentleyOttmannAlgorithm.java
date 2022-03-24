@@ -8,7 +8,7 @@ import cz.tomas.podivinsky.data.Point;
 
 import java.util.*;
 
-public class BentleyOttmann {
+public class BentleyOttmannAlgorithm {
 
     private final ArrayList<Point> points = new ArrayList<>();
     private final HashMap<Point, Point> endingPoints = new HashMap<>();

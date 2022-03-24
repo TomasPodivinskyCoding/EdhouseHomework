@@ -2,7 +2,6 @@ package cz.tomas.podivinsky.algorithm;
 
 import cz.tomas.podivinsky.IO.FileInterpreter;
 import cz.tomas.podivinsky.data.InputFileContent;
-import cz.tomas.podivinsky.data.IntersectionPoint;
 import cz.tomas.podivinsky.testUtil.TestUtility;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,10 +13,10 @@ import java.nio.file.Path;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-class ITBentleyOttmanTest {
+class ITBentleyOttmanAlgorithmTest {
 
     private FileInterpreter fileInterpreter;
-    private BentleyOttmann bentleyOttmann;
+    private BentleyOttmannAlgorithm bentleyOttmannAlgorithm;
 
     @TempDir
     private Path tempDir;
@@ -25,7 +24,7 @@ class ITBentleyOttmanTest {
     @BeforeEach
     public void beforeEach() {
         fileInterpreter = new FileInterpreter();
-        bentleyOttmann = new BentleyOttmann();
+        bentleyOttmannAlgorithm = new BentleyOttmannAlgorithm();
     }
 
     @Test
@@ -39,7 +38,7 @@ class ITBentleyOttmanTest {
 
         InputFileContent content = fileInterpreter.getStructuredFileContent(testFile.toString());
 
-        assertDoesNotThrow(()-> bentleyOttmann.findIntersections(content));
+        assertDoesNotThrow(()-> bentleyOttmannAlgorithm.findIntersections(content));
     }
 
     @Test
@@ -53,7 +52,7 @@ class ITBentleyOttmanTest {
 
         InputFileContent content = fileInterpreter.getStructuredFileContent(testFile.toString());
 
-        assertDoesNotThrow(()-> bentleyOttmann.findIntersections(content));
+        assertDoesNotThrow(()-> bentleyOttmannAlgorithm.findIntersections(content));
     }
 
     @Test
@@ -67,6 +66,6 @@ class ITBentleyOttmanTest {
 
         InputFileContent content = fileInterpreter.getStructuredFileContent(testFile.toString());
 
-        assertDoesNotThrow(()-> bentleyOttmann.findIntersections(content));
+        assertDoesNotThrow(()-> bentleyOttmannAlgorithm.findIntersections(content));
     }
 }
