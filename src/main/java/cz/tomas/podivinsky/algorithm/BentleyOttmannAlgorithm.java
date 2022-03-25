@@ -19,6 +19,7 @@ public class BentleyOttmannAlgorithm {
     public IntersectionPoint findIntersections(InputFileContent inputFileContent) {
         this.minDistance = inputFileContent.getMinDistance();
         this.maxDistance = inputFileContent.getMaxDistance();
+
         while (!inputFileContent.getAllPaths().isEmpty()) {
             Event currentLine = inputFileContent.getAllPaths().poll();
             assert currentLine != null;
@@ -27,9 +28,8 @@ public class BentleyOttmannAlgorithm {
                 case HORIZONTAL_END -> handleHorizontalEnd(currentLine);
                 case VERTICAL -> {
                     for (Point point : points) {
-                        if (validateIntersection(currentLine, point)) {
+                        if (validateIntersection(currentLine, point))
                             return new IntersectionPoint(currentLine.getPoint1().getX(), point.getY());
-                        }
                     }
                 }
             }
@@ -47,31 +47,30 @@ public class BentleyOttmannAlgorithm {
         endingPoints.remove(currentLine.getPoint2());
     }
 
-    private boolean validateIntersection(Event c, Point point) {
-        if (point.getDriverNumber() == c.getPoint1().getDriverNumber()) return false;
+    private boolean validateIntersection(Event lineEvent, Point point) {
+        if (point.getDriverNumber() == lineEvent.getPoint1().getDriverNumber()) return false;
 
-        int biggerY = Math.max(c.getPoint2().getY(), c.getPoint1().getY());
-        int smallerY = Math.min(c.getPoint2().getY(), c.getPoint1().getY());
-        if (point.getY() < biggerY && point.getY() > smallerY) {
-            int horizontalDistance = getHorizontalDistance(point, c);
-            int verticalDistance = getVerticalDistance(point, c);
-            return horizontalDistance >= minDistance && horizontalDistance <= maxDistance &&
-                    verticalDistance >= minDistance && verticalDistance <= maxDistance;
-        }
-        return false;
+        int biggerY = Math.max(lineEvent.getPoint2().getY(), lineEvent.getPoint1().getY());
+        int smallerY = Math.min(lineEvent.getPoint2().getY(), lineEvent.getPoint1().getY());
+        return (point.getY() > smallerY && point.getY() < biggerY) && checkDistance(point, lineEvent);
+    }
+
+    private boolean checkDistance(Point point, Event lineEvent) {
+        int horizontalDistance = getHorizontalDistance(point, lineEvent);
+        int verticalDistance = getVerticalDistance(point, lineEvent);
+        return horizontalDistance >= minDistance && horizontalDistance <= maxDistance &&
+                verticalDistance >= minDistance && verticalDistance <= maxDistance;
     }
 
     private int getHorizontalDistance(Point point, Event event) {
         Point counterPoint = endingPoints.get(point);
         Point smallerDistancePoint = getSmallerDistancePoint(point, counterPoint);
-        int horizontalDistance = smallerDistancePoint.getDistance();
-        return horizontalDistance + getDistanceToIntersection(event.getPoint1().getX(), smallerDistancePoint.getX());
+        return smallerDistancePoint.getDistance() + getDistanceToIntersection(event.getPoint1().getX(), smallerDistancePoint.getX());
     }
 
-    private int getVerticalDistance(Point point, Event c) {
-        Point smallerDistancePoint = getSmallerDistancePoint(c.getPoint1(), c.getPoint2());
-        int verticalDistance = smallerDistancePoint.getDistance();
-        return verticalDistance + getDistanceToIntersection(point.getY(), smallerDistancePoint.getY());
+    private int getVerticalDistance(Point point, Event event) {
+        Point smallerDistancePoint = getSmallerDistancePoint(event.getPoint1(), event.getPoint2());
+        return smallerDistancePoint.getDistance() + getDistanceToIntersection(point.getY(), smallerDistancePoint.getY());
     }
 
     private Point getSmallerDistancePoint(Point point1, Point point2) {
@@ -81,12 +80,9 @@ public class BentleyOttmannAlgorithm {
             return point1;
         }
     }
+
     private int getDistanceToIntersection(int num1, int num2) {
-        if (num1 > num2) {
-            return Math.abs(num1 - num2);
-        } else {
-            return Math.abs(num2 - num1);
-        }
+        return num1 > num2 ? Math.abs(num1 - num2) : Math.abs(num2 - num1);
     }
 
 }

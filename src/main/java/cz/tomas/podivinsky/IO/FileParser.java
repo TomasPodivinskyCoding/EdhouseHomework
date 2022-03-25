@@ -24,7 +24,7 @@ public class FileParser {
         dialog.setMode(FileDialog.LOAD);
         dialog.setVisible(true);
         dialog.dispose();
-        // this check is done to return null instead of concatenated nullnull value
+        // check to return null instead of concatenated nullnull value
         if (dialog.getDirectory() == null || dialog.getFile() == null) {
             return null;
         }
@@ -53,17 +53,20 @@ public class FileParser {
 
     private void readDriverData() throws IOException {
         currentDistance = 0;
-        String line = reader.readLine();
-        if (line == null) throw new IOException();
-        String[] instructions = line.split(",");
 
         Point startingCoordinates = new Point(0, 0, 0, driverNumber);
-        for (String instruction : instructions) {
+        for (String instruction : splitLine()) {
             Point finalCoordinates = parseInstructionToNewPoint(instruction, startingCoordinates);
             currentDistance = finalCoordinates.getDistance();
             addEvent(startingCoordinates, finalCoordinates);
             startingCoordinates = finalCoordinates;
         }
+    }
+
+    private String[] splitLine() throws IOException {
+        String line = reader.readLine();
+        if (line == null) throw new IOException();
+        return line.split(",");
     }
 
     private Point parseInstructionToNewPoint(String instruction, Point startingPoint) {
@@ -76,16 +79,23 @@ public class FileParser {
             case 'S'-> y -= distanceToMove;
             case 'E'-> x += distanceToMove;
             case 'W'-> x -= distanceToMove;
-            default -> currentDistance -= distanceToMove; // we do not move on unknown directions
+            default -> currentDistance -= distanceToMove; // do not move on unknown directions
         }
         return new Point(x, y, currentDistance, driverNumber);
     }
 
     private void addEvent(Point startingCoordinates, Point finalCoordinates) {
+        addVerticalEvent(startingCoordinates, finalCoordinates);
+        addHorizontalEvent(startingCoordinates, finalCoordinates);
+    }
+
+    private void addVerticalEvent(Point startingCoordinates, Point finalCoordinates) {
         if (startingCoordinates.getX() == finalCoordinates.getX()) {
             allPaths.add(new Event(startingCoordinates, finalCoordinates, EventType.VERTICAL));
-            return;
         }
+    }
+
+    private void addHorizontalEvent(Point startingCoordinates, Point finalCoordinates) {
         if (startingCoordinates.getX() > finalCoordinates.getX()) {
             allPaths.add(new Event(startingCoordinates, finalCoordinates, EventType.HORIZONTAL_END));
             allPaths.add(new Event(finalCoordinates, startingCoordinates, EventType.HORIZONTAL_START));
