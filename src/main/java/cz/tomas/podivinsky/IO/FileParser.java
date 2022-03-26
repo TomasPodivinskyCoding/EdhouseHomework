@@ -85,23 +85,17 @@ public class FileParser {
     }
 
     private void addEvent(Point startingCoordinates, Point finalCoordinates) {
-        addVerticalEvent(startingCoordinates, finalCoordinates);
-        addHorizontalEvent(startingCoordinates, finalCoordinates);
-    }
-
-    private void addVerticalEvent(Point startingCoordinates, Point finalCoordinates) {
         if (startingCoordinates.getX() == finalCoordinates.getX()) {
             allPaths.add(new Event(startingCoordinates, finalCoordinates, EventType.VERTICAL));
+        } else if (startingCoordinates.getX() < finalCoordinates.getX()) {
+            addHorizontalEvents(startingCoordinates, finalCoordinates);
+        } else {
+            addHorizontalEvents(finalCoordinates, startingCoordinates);
         }
     }
 
-    private void addHorizontalEvent(Point startingCoordinates, Point finalCoordinates) {
-        if (startingCoordinates.getX() > finalCoordinates.getX()) {
-            allPaths.add(new Event(startingCoordinates, finalCoordinates, EventType.HORIZONTAL_END));
-            allPaths.add(new Event(finalCoordinates, startingCoordinates, EventType.HORIZONTAL_START));
-        } else {
-            allPaths.add(new Event(startingCoordinates, finalCoordinates, EventType.HORIZONTAL_START));
-            allPaths.add(new Event(finalCoordinates, startingCoordinates, EventType.HORIZONTAL_END));
-        }
+    private void addHorizontalEvents(Point point1, Point point2) {
+        allPaths.add(new Event(point1, point2, EventType.HORIZONTAL_START));
+        allPaths.add(new Event(point2, point1, EventType.HORIZONTAL_END));
     }
 }
