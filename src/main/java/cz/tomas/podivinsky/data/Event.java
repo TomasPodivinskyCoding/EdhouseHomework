@@ -1,13 +1,19 @@
 package cz.tomas.podivinsky.data;
 
 import cz.tomas.podivinsky.data.enums.EventType;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@AllArgsConstructor
-public class Event {
-    private Point point1, point2;
-    private EventType type;
+public record Event(Point point1, Point point2,
+                    EventType type) {
+
+    public Point getPoint1() {
+        return this.point1;
+    }
+
+    public Point getPoint2() {
+        return this.point2;
+    }
+
+    public EventType getType() {
+        return this.type;
+    }
 }

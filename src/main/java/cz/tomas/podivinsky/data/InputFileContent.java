@@ -1,15 +1,19 @@
 package cz.tomas.podivinsky.data;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-
 import java.util.Queue;
 
-@AllArgsConstructor
-@Getter
-public class InputFileContent {
-    private final Queue<Event> allPaths;
-    private int minDistance;
-    private int maxDistance;
+public record InputFileContent(Queue<Event> allPaths, int minDistance,
+                               int maxDistance) {
+
+    public Queue<Event> getAllPaths() {
+        return this.allPaths;
+    }
+
+    public int getMinDistance() {
+        return this.minDistance;
+    }
+
+    public int getMaxDistance() {
+        return this.maxDistance;
+    }
 }

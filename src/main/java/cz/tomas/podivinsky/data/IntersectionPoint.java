@@ -1,12 +1,12 @@
 package cz.tomas.podivinsky.data;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+public record IntersectionPoint(int x, int y) {
 
-@AllArgsConstructor
-@Getter
-public class IntersectionPoint {
-    private int x;
-    private int y;
+    public int getX() {
+        return this.x;
+    }
+
+    public int getY() {
+        return this.y;
+    }
 }
